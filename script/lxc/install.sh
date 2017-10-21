@@ -10,7 +10,7 @@ iface br0 inet static
 	netmask 255.255.255.0
 	    " >> /etc/network/interfaces
 ifup br0
-sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
+echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf
 sysctl -f
 cp $(pwd)/ferm.conf /etc/ferm/ferm.conf
 systemctl reload ferm
