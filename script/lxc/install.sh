@@ -1,7 +1,7 @@
 #!/bin/bash
 apt-get update && apt-get -y upgrade
 apt-get -y install lxc libvirt0 libpam-cgroup libpam-cgfs bridge-utils ferm fail2ban
-ii="";for i in $(ip a | awk -F ":" '/^[0-9]/ {print $2}'); do if [[ "$i" != "lo" ]];then ii+=" $i";fi;done; sed -i "s/DEV_WORLD=()/DEV_WORLD=($ii)/" $(pwd)/ferm.conf
+ii="";for i in $(ip a | awk -F ":" '/^[0-9]/ {print $2}'); do if [[ "$i" != "lo" ]];then ii+=" $i";fi;done; sed -i "s/DEV_WORLD=()/DEV_WORLD=($ii)/" $(pwd)/script/lxc/ferm.conf
 brctl addbr br0
 echo "
 allow-hotplug br0
@@ -14,5 +14,5 @@ iface br0 inet static
 ifup br0
 echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf
 sysctl -f
-cp $(pwd)/ferm.conf /etc/ferm/ferm.conf
+cp $(pwd)/script/lxc/ferm.conf /etc/ferm/ferm.conf
 systemctl reload ferm
