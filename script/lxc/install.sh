@@ -1,5 +1,6 @@
 #!/bin/bash
 apt-get -y install lxc libvirt0 libpam-cgroup libpam-cgfs bridge-utils ferm
+ii="";for i in $(ip a | awk -F ":" '/^[0-9]/ {print $2}'); do if [[ "$i" != "lo" ]];then ii+=" $i";fi;done; sed -i "s/DEV_WORLD=()/DEV_WORLD=($ii)/" $(pwd)/ferm.conf
 brctl addbr br0
 echo "
 allow-hotplug br0
