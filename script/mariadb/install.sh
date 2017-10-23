@@ -1,64 +1,23 @@
 #!/bin/bash -x
-passwd1 () {
 
-data=$(tempfile 2>/dev/null)
-# trap it
-trap "rm -f $data" 0 1 2 5 15
-# get password
-dialog --title "Password" \
-	--clear \
-	--insecure \
-	--passwordbox "$names" 10 30 2> $data
+lxc-create -n mariadb -t debian
+sed -i 's/lxc.network.type = empty/lxc.network.type = veth/' /var/lib/lxc/mariadb/config
+sed -i '/lxc.network.type = veth/ a\lxc.network.link = br0 ' /var/lib/lxc/mariadb/config
+sed -i '/lxc.network.link = br0/ a\lxc.network.name = eth0 ' /var/lib/lxc/mariadb/config
 
-ret=$?
+sed -i 's/iface eth0 inet dhcp/iface eth0 inet static/' /var/lib/lxc/mariadb/rootfs/etc/network/interfaces
+echo "     address 192.168.123.2/16
+     gateway 192.168.123.1
+     # dns-* options are implemented by the resolvconf package, if installed
+     dns-nameservers 8.8.8.8 8.8.4.4" >> /var/lib/lxc/mariadb/rootfs/etc/network/interfaces
 
-# make decision
-case $ret in
-	0)
-	  pass1=$(cat $data);;
-	1)
-	  echo "Cancel pressed."
-	  passwd1;;
-	255)
-	  [ -s $data ] &&  cat $data || echo "ESC pressed."
-	  passwd1;;
-esac
+lxc-start -n mariadb
 
-if [ -z "$pass1" ];then  passwd1;fi
+lxc-attach -n mariadb -- apt-get -y install apache2 php phpmyadmin mariadb-server php-imap mcrypt
 
-}
-
-apt-get -y install apache2 php phpmyadmin mariadb-server php-imap mcrypt
-
-names="Enter root password mysql"
-while [ -z "$pass1" ]
-do
-	passwd1
-	tmp1=$pass1
-	names="Enter the password again"
-	passwd1
-	if [[ "$tmp1" != "$pass1" ]]
-	then
-	  names=" Passwords do not match \n Enter root password mysql "
-	  pass1=""
-	fi
-done
-mysql -e "SET PASSWORD FOR root@localhost=PASSWORD($pass1);"
-passroot=$pass1
-pass1=""
-
-names="Enter password phpmyadmin user myadmin"
-while [ -z "$pass1" ]
-do
-        passwd1
-        tmp1=$pass1
-        names="Enter the password again"
-        passwd1
-        if [[ "$tmp1" != "$pass1" ]]
-        then
-          names=" Passwords do not match \n Enter password phpmyadmin user myadmin "
-          pass1=""
-        fi
-done
-
-mysql -uroot -p$passroot -e "CREATE USER 'myadmin'@'localhost' IDENTIFIED BY $pass1; GRANT ALL PRIVILEGES ON *.* TO 'myadmin'@'localhost' WITH GRANT OPTION;"
+PASSWORD=$(whiptail --title "Test Password Box" --passwordbox "Enter your password and choose Ok to continue." 10 60 3>&1 1>&2 2>&3)
+ 
+exitstatus=$?
+if [ $exitstatus = 0 ]; then
+	mysql -e "CREATE USER 'myadmin'@'localhost' IDENTIFIED BY $PASSWORD; GRANT ALL PRIVILEGES ON *.* TO 'myadmin'@'localhost' WITH GRANT OPTION;"
+fi
