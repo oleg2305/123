@@ -21,5 +21,5 @@ exitstatus=$?
 if [ $exitstatus = 0 ]; then
 	lxc-attach -n mariadb --  mysql -e "CREATE USER 'myadmin'@'localhost' IDENTIFIED BY '$PASSWORD'; GRANT ALL PRIVILEGES ON *.* TO 'myadmin'@'localhost' WITH GRANT OPTION;"
 fi
-echo "&FORWARD(tcp, $DEV_WORLD, 80, 192.168.123.2);" >> /etc/ferm/ferm.conf
+echo "&FORWARD(tcp, \$DEV_WORLD, 80, 192.168.123.2);" >> /etc/ferm/ferm.conf
 systemctl reload ferm
