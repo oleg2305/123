@@ -10,6 +10,7 @@ echo "     address 192.168.123.2/16
      gateway 192.168.123.1
      # dns-* options are implemented by the resolvconf package, if installed
      dns-nameservers 8.8.8.8 8.8.4.4" >> /var/lib/lxc/mariadb/rootfs/etc/network/interfaces
+echo "nameserver 8.8.8.8" > /var/lib/lxc/mariadb/rootfs/etc/resolv.conf
 
 lxc-start -n mariadb
 
