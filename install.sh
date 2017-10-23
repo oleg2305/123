@@ -15,14 +15,17 @@ fi
 
 
 OPTION=$(whiptail --title "Menu Dialog" --menu "Select the service to be installed" 15 60 4 \
-	"1" "Mariadb+PhpMyAdmin" \
-	"2" "Grilled Halloumi Cheese" \
-	"3" "Charcoaled Chicken Wings" \
-	"4" "Fried Aubergine"  3>&1 1>&2 2>&3)
+	"1" "Empty LXC" \
+	"2" "Mariadb+PhpMyAdmin"  3>&1 1>&2 2>&3)
  
 exitstatus=$?
 if [ $exitstatus = 0 ]; then
-	if [ $OPTION = 1 ]; then
-		$(pwd)/script/mariadb/install.sh
-	fi
+	case "$OPTION" in
+		"1" )
+			$(pwd)/script/emptylxc/install.sh
+		;;
+		"2" )
+			$(pwd)/script/mariadb/install.sh
+		;;
+	esac
 fi
