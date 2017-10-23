@@ -6,6 +6,16 @@ if (whiptail --title "Service installation script" --yesno "Do you want to confi
 	else
 		$(pwd)/script/lxc/install.sh
 	fi
-else
-	echo "User selected No, exit status was $?."
+fi
+OPTION=$(whiptail --title "Menu Dialog" --menu "Select the service to be installed" 15 60 4 \
+	"1" "Mariadb+PhpMyAdmin" \
+	"2" "Grilled Halloumi Cheese" \
+	"3" "Charcoaled Chicken Wings" \
+	"4" "Fried Aubergine"  3>&1 1>&2 2>&3)
+ 
+exitstatus=$?
+if [ $exitstatus = 0 ]; then
+	if [ $OPTION = 1 ]; then
+		echo Mariadb
+	fi
 fi
