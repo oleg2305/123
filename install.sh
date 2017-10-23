@@ -16,6 +16,6 @@ OPTION=$(whiptail --title "Menu Dialog" --menu "Select the service to be install
 exitstatus=$?
 if [ $exitstatus = 0 ]; then
 	if [ $OPTION = 1 ]; then
-		echo Mariadb
+		$(pwd)/script/mariadb/install.sh
 	fi
 fi
