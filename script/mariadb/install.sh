@@ -15,7 +15,7 @@ lxc-start -n mariadb
 
 lxc-attach -n mariadb -- apt-get -y install apache2 php phpmyadmin mariadb-server php-imap mcrypt
 
-PASSWORD=$(whiptail --title "Test Password Box" --passwordbox "Enter your password and choose Ok to continue." 10 60 3>&1 1>&2 2>&3)
+PASSWORD=$(whiptail --title "Password phpmyadmin" --passwordbox "Enter password for user myadmin  and choose Ok to continue." 10 60 3>&1 1>&2 2>&3)
  
 exitstatus=$?
 if [ $exitstatus = 0 ]; then
