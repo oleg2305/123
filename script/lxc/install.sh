@@ -1,6 +1,6 @@
 #!/bin/bash
 apt-get update && apt-get -y upgrade
-apt-get -y install lxc libvirt0 libpam-cgroup libpam-cgfs bridge-utils ferm fail2ban
+apt-get -y install lxc libvirt0 libpam-cgroup libpam-cgfs bridge-utils ferm fail2ban nmap tcpdump
 cp $(pwd)/script/lxc/ferm.conf /etc/ferm/ferm.conf
 ii="";for i in $(ip a | awk -F ":" '/^[0-9]/ {print $2}'); do if [[ "$i" != "lo" ]];then ii+=" $i";fi;done; sed -i "s/DEV_WORLD=()/DEV_WORLD=($ii)/" /etc/ferm/ferm.conf
 brctl addbr br0
