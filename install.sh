@@ -1,10 +1,11 @@
 #!/bin/bash
+. $(pwd)/script/func.sh
 if (whiptail --title "Service installation script" --yesno "Do you want to configure the host - lxc, fail2ban, ferm?" 8 78) then
 	if [ "$(id -u)" != "0" ]; then
 		whiptail --title "Error" --msgbox "This script must be run as sudo" 8 78
 		exit 1
 	else
-		$(pwd)/script/lxc/install.sh
+		setuphost
 	fi
 fi
 if [ "$(id -u)" != "0" ]; then
@@ -22,10 +23,10 @@ exitstatus=$?
 if [ $exitstatus = 0 ]; then
 	case "$OPTION" in
 		"1" )
-			$(pwd)/script/emptylxc/install.sh
+			emptylxc
 		;;
 		"2" )
-			$(pwd)/script/mariadb/install.sh
+			mariadb
 		;;
 	esac
 fi
