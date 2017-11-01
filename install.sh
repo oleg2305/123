@@ -17,7 +17,8 @@ fi
 
 OPTION=$(whiptail --title "Menu Dialog" --menu "Select the service to be installed" 15 60 4 \
 	"1" "Empty LXC" \
-	"2" "Mariadb+PhpMyAdmin"  3>&1 1>&2 2>&3)
+	"2" "Mariadb+PhpMyAdmin" \
+	"3" "Postfix+Dovecot+Postgresql+Postfixadmin+Roundcube"  3>&1 1>&2 2>&3)
  
 exitstatus=$?
 if [ $exitstatus = 0 ]; then
@@ -27,6 +28,9 @@ if [ $exitstatus = 0 ]; then
 		;;
 		"2" )
 			mariadb
+		;;
+		"3" )
+			postf
 		;;
 	esac
 fi

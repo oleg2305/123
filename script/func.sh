@@ -61,3 +61,10 @@ mariadb ()
 	echo "&FORWARD(tcp, \$DEV_WORLD, 80, $IP);" >> /etc/ferm/ferm.conf
 	systemctl reload ferm
 }
+
+postf ()
+{
+	emptylxc
+	cp $(pwd)/script/postfix.sh /var/lib/lxc/$PET/rootfs/root/
+	lxc-attach -n $PET -- /root/postfix.sh
+}
