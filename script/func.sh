@@ -14,6 +14,8 @@ setuphost ()
         	address 192.168.123.1
         	broadcast 192.168.123.255
         	netmask 255.255.255.0
+		pre-up brctl addbr br0
+		post-down brctl delbr br0
             	" >> /etc/network/interfaces
 	ifup br0
 	echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf
