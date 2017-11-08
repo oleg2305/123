@@ -41,6 +41,7 @@ emptylxc ()
 	sed -i 's/lxc.network.type = empty/lxc.network.type = veth/' /var/lib/lxc/$PET/config
 	sed -i '/lxc.network.type = veth/ a\lxc.network.link = br0 ' /var/lib/lxc/$PET/config
 	sed -i '/lxc.network.link = br0/ a\lxc.network.name = eth0 ' /var/lib/lxc/$PET/config
+	sed -i '/lxc.network.name = eth0/ a\lxc.network.mtu = 1400 ' /var/lib/lxc/$PET/config
 	sed -i 's/iface eth0 inet dhcp/iface eth0 inet static/' /var/lib/lxc/$PET/rootfs/etc/network/interfaces
 	IP=$(nmap -sn -oG - 192.168.123.0/24 -v | grep Down | sed -n -e 2p | awk '{print $2}')
 	echo "     address $IP/24

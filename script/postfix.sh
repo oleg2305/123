@@ -48,16 +48,20 @@ error_check
 #echo "Preparing database:"
 
 DBPASS=$(date | md5sum | head -c 32)
-#CREATEUSER="CREATE USER postfix_user WITH PASSWORD '${DBPASS}';"
-#CREATEDB="CREATE DATABASE postfix_db;"
-#PERMISSDB="GRANT ALL PRIVILEGES ON DATABASE postfix_db TO postfix_user;"
-
-#sudo -u postgres psql -c "${CREATEUSER}"
-#error_check
-#sudo -u postgres psql -c "${CREATEDB}"
-#error_check
-#sudo -u postgres psql -c "${PERMISSDB}"
-#error_check
+su postgres -c "
+psql template1 <<END
+CREATE USER postfix_user;
+ALTER ROLE postfix_user WITH ENCRYPTED PASSWORD '$DBPASS';
+\q
+END
+createdb -O postfix_user postfix_db
+exit
+psql template1 <<END
+GRANT ALL PRIVILEGES ON DATABASE postfix_db TO postfix_user;
+\q
+END
+"
+error_check
 
 echo
 echo "Please inform the main domain of your server, like 'example.com'"
@@ -380,11 +384,11 @@ echo "USER: postfix_user"
 echo "PASS: ${DBPASS}"
 echo "DATABASE: postfix_db"
 echo
-echo "while in the postgres shell, you can create those with:"
-echo "postgres# createuser -P postfix_user"
-echo
-echo "Past the password when it prompts"
-echo
-echo "postgres# createdb postfix_db -O postfix_user"
+#echo "while in the postgres shell, you can create those with:"
+#echo "postgres# createuser -P postfix_user"
+#echo
+#echo "Past the password when it prompts"
+#echo
+#echo "postgres# createdb postfix_db -O postfix_user"
 echo
 
